@@ -1,0 +1,54 @@
+.room-chat {
+    border: 1px solid black;
+    border-radius: 10px;
+    min-height: 50rem;
+    display: flex; 
+    flex-direction: column; 
+    padding: 1rem;
+}
+
+.room-chat .product-title {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* BOX CHAT */
+.room-chat .chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+}
+
+/* RIGHT CHAT */
+.right-chat {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end;
+    margin-left: auto;
+    border: 1px solid black;
+    max-width: 20rem;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+/* LEFT CHAT */
+.left-chat {
+    display: flex;
+    flex-direction: column; 
+    margin-right: auto;
+    border: 1px solid black;
+    max-width: 20rem; 
+    padding: 0.5rem;
+    background-color: #e0f7fa; 
+    border-radius: 5px; 
+}
+
+.left-chat h6,
+.left-chat h5,
+.right-chat h6,
+.right-chat h5 {
+    margin: 0;
+}
