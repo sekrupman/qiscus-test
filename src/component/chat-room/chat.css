@@ -16,6 +16,7 @@ body{
     width: 100%;
     max-width: 100%;
     background-color: white;
+    margin-top: 5rem;
 }
 
 .room-chat .product-title {
@@ -32,7 +33,6 @@ body{
     width: 100%;
     gap:1rem;
     max-width: 100%;
-    margin-top: 4rem;
 }
 
 /* RIGHT CHAT */

@@ -4,16 +4,17 @@ import './navbar.css'
 
 function Navigationbar(){
     return(
+      <div>
         <Navbar.Brand href="/">
             <img
               alt="logo"
               src="/images/logo.png"
               width="80"
               height="80"
-              className="d-inline-block align-top"
             />{' '}
             <span style={{ fontSize:'30px' }}>Chat App</span>
           </Navbar.Brand>
+      </div>
     )
 }
 
