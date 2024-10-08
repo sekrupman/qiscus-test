@@ -72,7 +72,7 @@
           {
             "id": 885519,
             "type": "pdf",
-            "pdf-url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            "pdf-url": "https://api.arya.ai/images/test.pdf",
             "caption": "Product details PDF",
             "sender": "agent@mail.com"
           }

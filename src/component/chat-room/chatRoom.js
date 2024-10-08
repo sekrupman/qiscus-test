@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Button from 'react-bootstrap/Button';
+import { IoIosAttach } from "react-icons/io";
 import axios from "axios";
 import "./chat.css";
 
@@ -6,8 +8,10 @@ const ChatPage = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
 
-  // FETCH DATA
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,165 +26,158 @@ const ChatPage = () => {
     fetchData();
   }, []);
 
-  // ERROR HANDLING
   if (error) {
     return <div>Error loading data: {error.message}</div>;
   }
-  if (!data) {
-    return <div>Loading...</div>;
-  }
 
+  const customerName =
+    data?.room?.participant?.filter((participant) => participant.role === 2)[0]
+      ?.name || "Customer";
 
-  // CUSTOMER NAME
-  const customerName = data.room.participant.filter(
-    (participant) => participant.role == 2
-  )[0]?.name;
+  const agentName =
+    data?.room?.participant?.filter((participant) => participant.role === 1)[0]
+      ?.name || "Agent";
 
-  // CUSTOMER CHAT
-  let customerChat = data?.comments?.filter(
-    (comment) => comment.sender == "customer@mail.com"
-  );
+  const combinedChat = data?.comments
+    ?.sort((a, b) => a.id - b.id)
+    .map((comment, index) => {
+      const isCustomer = comment.sender === "customer@mail.com";
 
-  // AGENT NAME
-  const agentName = data.room.participant.filter(
-    (participant) => participant.role == 1
-  )[0]?.name;
+      return (
+        <div key={index} className={isCustomer ? "right-chat" : "left-chat"}>
+          <div className={isCustomer ? "right-chat-name" : "left-chat-name"}>
+            <h6>{isCustomer ? customerName : agentName}</h6>
+          </div>
+          <div className={isCustomer ? "right-chat-text" : "left-chat-text"}>
+            {comment.message && <h5>{comment.message}</h5>}
+            {comment.type === "image" && comment["img-url"] && (
+              <div>
+                <img
+                  src={comment["img-url"]}
+                  alt={comment.caption || "Image"}
+                  style={{
+                    maxWidth: "100%",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleImageClick(comment["img-url"])}
+                />
+                {comment.caption && <p>{comment.caption}</p>}
+              </div>
+            )}
+            {comment.type === "video" && comment["video-url"] && (
+              <div>
+                <video
+                  controls
+                  style={{ maxWidth: "100%", borderRadius: "8px" }}
+                >
+                  <source src={comment["video-url"]} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                {comment.caption && <p>{comment.caption}</p>}
+              </div>
+            )}
+            {comment.type === "pdf" && comment["pdf-url"] && (
+              <div>
+                <a
+                  href={comment["pdf-url"]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <button
+                    style={{
+                      padding: "10px 15px",
+                      borderRadius: "5px",
+                      backgroundColor: "#007bff",
+                      color: "#fff",
+                      border: "none",
+                    }}
+                  >
+                    View PDF: {comment.caption || "Download"}
+                  </button>
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    });
 
-  // AGENT CHAT
-  const agentChat = data?.comments?.filter(
-    (comment) => comment.sender == "agent@mail.com"
-  );
-
-  // HANDLE IMAGE WHEN CLICKED
   const handleImageClick = (url) => {
     setSelectedImage(url);
   };
+
   const closeModal = () => {
     setSelectedImage(null);
   };
 
+  const handleSendMessage = () => {
+    console.log("Message sent:", message);
+    setMessage("");
+  };
+
+  const openFileModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeFileModal = () => {
+    setIsModalOpen(false);
+    setFile(null);
+  };
+
+  const handleFileUpload = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSendFile = () => {
+    if (file) {
+      console.log("File sent:", file);
+      closeFileModal();
+    }
+  };
+
   return (
     <div className="room-chat">
-      <div className="product-title">
-        <h3>{data.room.name}</h3>
-      </div>
-
       <div className="chat-container">
-        {customerChat.map((comment, index) => (
-          <div key={index} className="right-chat">
-            <div className="right-chat-name">
-              <h6>{customerName}</h6>
-            </div>
-            <div className="right-chat-text">
-              <h5>{comment.message}</h5>
-              {comment.type === "image" && comment["img-url"] ? (
-                <div>
-                  <img
-                    src={comment["img-url"]}
-                    alt={comment.caption || "Image"}
-                    style={{ maxWidth: "100%", borderRadius: "8px", cursor: "pointer" }}
-                    onClick={() => handleImageClick(comment["img-url"])}
-                  />
-                  {comment.caption && <p>{comment.caption}</p>}
-                </div>
-              ) : null}
-              {comment.type === "video" && comment["video-url"] ? (
-                <div>
-                  <video
-                    controls
-                    style={{ maxWidth: "100%", borderRadius: "8px" }}
-                  >
-                    <source src={comment["video-url"]} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                  {comment.caption && <p>{comment.caption}</p>}
-                </div>
-              ) : null}
-              {comment.type === "pdf" && comment["pdf-url"] ? (
-                <div>
-                  <a
-                    href={comment["pdf-url"]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button
-                      style={{
-                        padding: "10px 15px",
-                        borderRadius: "5px",
-                        backgroundColor: "#007bff",
-                        color: "#fff",
-                        border: "none",
-                      }}
-                    >
-                      View PDF: {comment.caption || "Download"}
-                    </button>
-                  </a>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ))}
-
-        {agentChat.map((comment, index) => (
-          <div className="left-chat">
-            <div className="left-chat-name">
-              <h6>{agentName}</h6>
-            </div>
-            <div className="left-chat-text">
-              <h5>{comment.message}</h5>
-              {comment.type === "image" && comment["img-url"] ? (
-                <div>
-                  <img
-                    src={comment["img-url"]}
-                    alt={comment.caption || "Image"}
-                    style={{ maxWidth: "100%", borderRadius: "8px" }}
-                  />
-                  {comment.caption && <p>{comment.caption}</p>}
-                </div>
-              ) : null}
-              {comment.type === "video" && comment["video-url"] ? (
-                <div>
-                  <video
-                    controls
-                    style={{ maxWidth: "100%", borderRadius: "8px" }}
-                  >
-                    <source src={comment["video-url"]} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                  {comment.caption && <p>{comment.caption}</p>}
-                </div>
-              ) : null}
-              {comment.type === "pdf" && comment["pdf-url"] ? (
-                <div>
-                  <a
-                    href={comment["pdf-url"]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button
-                      style={{
-                        padding: "10px 15px",
-                        borderRadius: "5px",
-                        backgroundColor: "#007bff",
-                        color: "#fff",
-                        border: "none",
-                      }}
-                    >
-                      View PDF: {comment.caption || "Download"}
-                    </button>
-                  </a>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ))}
+        <div className="product-title">
+          <h3>{data?.room?.name}</h3>
+        </div>
+        {combinedChat}
       </div>
-{/* MODAL IMAGES */}
-{selectedImage && (
+
+      <div class="typebox">
+        <input type="text" id="message-input" />
+        <button id="upload-file" onClick={openFileModal} style={{ marginRight: "1rem", fontSize: "1.5rem" }}>
+        <IoIosAttach />
+        </button>
+        <button id="send-message" onClick={handleSendMessage}>
+          Send
+        </button>
+      </div>
+      {/* MODAL SELECT IMAGES */}
+      {selectedImage && (
         <div className="modal" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <img src={selectedImage} alt="Full size" style={{ maxWidth: '100%' }} />
-            <button onClick={closeModal} className="close-btn">Close</button>
+            <img
+              src={selectedImage}
+              alt="Full size"
+              style={{ maxWidth: "100%" }}
+            />
+            <button onClick={closeModal} className="close-btn">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL UPLOAD FILE */}
+      {isModalOpen && (
+        <div className="modal" onClick={closeFileModal}>
+          <div className="modal-content-upload-file" onClick={(e) => e.stopPropagation()}>
+            <h4>Upload a File</h4>
+            <input type="file" onChange={handleFileUpload} />
+            <Button variant="primary"  style={{ marginTop:'1rem', display:"inline-block" }} onClick={handleSendFile}>Send File</Button>
+            <Button variant="danger" style={{ marginTop:'1rem', display: 'inline-block' }} onClick={closeFileModal}>Close</Button>
           </div>
         </div>
       )}

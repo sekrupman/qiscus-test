@@ -1,3 +1,11 @@
+body, html{
+    overflow-x: hidden;
+}
+
+body{
+    background-color: #F8F8FF;
+}
+
 .room-chat {
     border: 1px solid black;
     border-radius: 10px;
@@ -5,6 +13,9 @@
     display: flex; 
     flex-direction: column; 
     padding: 1rem;
+    width: 100%;
+    max-width: 100%;
+    background-color: white;
 }
 
 .room-chat .product-title {
@@ -19,6 +30,8 @@
     flex-direction: column;
     align-items: stretch;
     width: 100%;
+    gap:1rem;
+    max-width: 100%;
 }
 
 /* RIGHT CHAT */
@@ -30,7 +43,7 @@
     border: 1px solid black;
     max-width: 20rem;
     padding: 0.5rem;
-    background-color: #f9f9f9;
+    background-color: #FAF9F6;
     border-radius: 5px;
 }
 
@@ -42,7 +55,7 @@
     border: 1px solid black;
     max-width: 20rem; 
     padding: 0.5rem;
-    background-color: #e0f7fa; 
+    background-color: #F5F5F5; 
     border-radius: 5px; 
 }
 
@@ -64,7 +77,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000; 
+    z-index: 1000;
+    
   }
   
   .modal-content {
@@ -75,6 +89,18 @@
     background-color: #fff;
     padding: 1rem;
     border-radius: 8px;
+  }
+  .modal-content-upload-file{
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 25rem;
+    display: flex;
+    flex-direction: column;
   }
   
   .close-btn {
@@ -89,3 +115,58 @@
     border-radius: 5px;
   }
   
+  .typebox {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    margin-top: 1rem;
+}
+
+.typebox input {
+    flex: 1;
+    height: 50px;
+    font-size: 18px;
+}
+
+.typebox button {
+    flex: 0;
+    height: 100%;
+    padding: 0 10px;
+    background: #007bff;
+    color: #eee;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 376px) {
+    .container{
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    .room-chat{
+        width: 100%;
+    }
+
+    .typebox {
+        width: 100%;
+    }
+
+    .left-chat, .right-chat{
+        max-width: 80% !important;
+    }
+
+    .typebox input {
+        font-size: 16px;
+        width: auto;
+        height: 80%;
+    }
+
+    .typebox button {
+        font-size: 14px;
+        padding: 0 8px;
+        height: 80%;
+    }
+}
