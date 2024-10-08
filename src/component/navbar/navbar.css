@@ -1,0 +1,6 @@
+.navbar-brand{
+    position:fixed;
+    display:block;
+    background-color: white;
+    width: 100%;
+}
